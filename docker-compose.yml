@@ -1,0 +1,16 @@
+services:
+
+  exam_postgres:
+    container_name: exam_postgres_db
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: exam_db
+      POSTGRES_USER: exam_user
+      POSTGRES_PASSWORD: dbhunter
+    ports:
+      - "5432:5432"
+    volumes:
+      - exam_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  exam_postgres_data:

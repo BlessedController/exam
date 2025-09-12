@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: exam
+  datasource:
+    url: jdbc:postgresql://localhost:5432/exam_db
+    username: exam_user
+    password: dbhunter
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
