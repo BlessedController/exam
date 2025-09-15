@@ -2,9 +2,9 @@ package com.tech.exam.service;
 
 import com.tech.exam.dto.request.SetPinRequest;
 import com.tech.exam.dto.response.CardResponse;
-import com.tech.exam.exception.CardNotFoundException;
-import com.tech.exam.model.Card;
-import com.tech.exam.model.Customer;
+import com.tech.exam.exception.NotFoundException;
+import com.tech.exam.model.CardEntity;
+import com.tech.exam.model.CustomerEntity;
 import com.tech.exam.repository.CardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 
 import static com.tech.exam.converter.CardResponseConverter.convertToCardResponse;
+import static com.tech.exam.model.enums.CardStatus.DELETED;
 import static lombok.AccessLevel.PRIVATE;
 
 @Service
@@ -34,50 +35,51 @@ public class CardService {
 
         String cardNumber = sb.toString();
 
-        Card card = Card.builder()
+        CardEntity cardEntity = CardEntity.builder()
                 .costumerId(customerId)
                 .cardNumber(cardNumber)
                 .cvv(random.nextInt(100, 1000))
-                .pin(random.nextInt(1000, 10000))
+                .pin(random.nextInt(1000, 10000) + "")
                 .build();
 
-        cardRepository.save(card);
+        cardRepository.save(cardEntity);
 
-        return convertToCardResponse(card);
+        CustomerEntity customerById = customerService.findCustomerById(customerId);
+
+        customerById.setCardNumber(cardNumber);
+
+        customerService.addCardToCustomer(customerById);
+
+        return convertToCardResponse(cardEntity);
     }
 
     public CardResponse getCardByCardNumber(String cardNumber) {
 
-        Card card = findCardByCardNumber(cardNumber);
+        CardEntity cardEntity = findCardByCardNumber(cardNumber);
 
-        return convertToCardResponse(card);
+        return convertToCardResponse(cardEntity);
     }
 
-    public String setPin(Long customerId, SetPinRequest request) {
+    public void setPin(Long customerId, SetPinRequest request) {
 
-        Customer customer = customerService.findCustomerById(customerId);
+        CustomerEntity customer = customerService.findCustomerById(customerId);
 
         String cardNumber = customer.getCardNumber();
 
-        Card card = findCardByCardNumber(cardNumber);
+        CardEntity cardEntity = findCardByCardNumber(cardNumber);
 
+        cardEntity.setPin(request.pin());
 
-        card.setPin(request.pin());
-
-        cardRepository.save(card);
-
-        return "Pin has set successfully";
+        cardRepository.save(cardEntity);
     }
 
     public void deleteCardById(String cardNumber) {
-
-        Card card = findCardByCardNumber(cardNumber);
-
-        cardRepository.delete(card);
+        CardEntity cardEntity = findCardByCardNumber(cardNumber);
+        cardEntity.setStatus(DELETED);
     }
 
-    protected Card findCardByCardNumber(String cardNumber) {
+    protected CardEntity findCardByCardNumber(String cardNumber) {
         return cardRepository.findCardByCardNumber(cardNumber).orElseThrow(() ->
-                new CardNotFoundException("Card not found by card number: " + cardNumber));
+                new NotFoundException("Card not found by card number: " + cardNumber));
     }
 }

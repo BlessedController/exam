@@ -8,15 +8,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(CardNotFoundException.class)
-    public ResponseEntity<?> handleCardNotFoundException(CardNotFoundException ex) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> handleCardNotFoundException(NotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
-
-    @ExceptionHandler(CustomerNotFoundException.class)
-    public ResponseEntity<?> handleCardNotFoundException(CustomerNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
 
 }

@@ -1,10 +1,10 @@
 package com.tech.exam.repository;
 
-import com.tech.exam.model.Card;
+import com.tech.exam.model.CardEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface CardRepository extends JpaRepository<Card, Long> {
-    Optional<Card> findCardByCardNumber(String cardNumber);
+public interface CardRepository extends JpaRepository<CardEntity, Long> {
+    Optional<CardEntity> findCardByCardNumber(String cardNumber);
 }

@@ -1,12 +1,12 @@
 package com.tech.exam.dto.response;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record CardResponse(
         Long id,
         Long costumerId,
         String cardNumber,
-        LocalDate createDate,
-        LocalDate expiryDate
+        LocalDateTime createDate,
+        LocalDateTime expiryDate
 ) {
 }

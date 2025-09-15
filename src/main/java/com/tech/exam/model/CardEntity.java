@@ -1,9 +1,9 @@
 package com.tech.exam.model;
 
+import com.tech.exam.model.enums.CardStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +14,10 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+import static com.tech.exam.model.enums.CardStatus.ACTIVE;
+import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
 
 @Entity
@@ -24,29 +27,33 @@ import static lombok.AccessLevel.PRIVATE;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = PRIVATE)
-public class Card {
+public class CardEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     Long id;
 
-    @Column(name = "costumer_id", unique = true)
+    @Column(unique = true)
     Long costumerId;
 
-    @Column(name = "card_number", unique = true, length = 16)
+    @Column(unique = true, length = 16)
     String cardNumber;
 
-    @Column(name = "cvv", unique = true)
+    @Column(unique = true)
     Integer cvv;
 
-    @Column(name = "pin")
-    Integer pin;
+    @Column(length = 4)
+    String pin;
+
+    @Column
+    @Builder.Default
+    CardStatus status = ACTIVE;
 
     @CreationTimestamp
-    LocalDate createDate;
+    LocalDateTime createDate;
 
     @Builder.Default
-    LocalDate expiryDate = LocalDate.now().plusYears(5L);
+    LocalDateTime expiryDate = LocalDate.now().plusYears(5L).atStartOfDay();
 
 
 }
